@@ -1,8 +1,28 @@
-from . import db
+from flask_sqlalchemy import SQLAlchemy;
+
+db = SQLAlchemy();
 
 # user model
-class Users():
-    id = db.Column(db.integer, primary_key=True)
-    username = db.Column(db.String(255), nullable=False)
-    email = db.Colimn(db.String(120), nullable=False)
-    password_hash = db.Column(db.String(128))
+class Owner(db.Model):
+    __tablename__ = 'owners'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, unique=True)
+
+    pets = db.relationship('Pet', backref='owner')
+
+    def __repr__(self):
+        return f'<Pet Owner {self.name}>'
+
+class Pet(db.Model):
+    __tablename__ = 'pets'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    species = db.Column(db.String)
+
+    owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'))
+
+    def __repr__(self):
+        return f'<Pet {self.name}, {self.species}>'
+
